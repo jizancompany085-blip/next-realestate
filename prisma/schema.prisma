@@ -1,0 +1,96 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model AdminUser {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         String   @default("admin")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model City {
+  id               String     @id @default(uuid())
+  slug             String     @unique
+  name             String
+  nameAr           String
+  region           String
+  regionAr         String
+  image            String
+  latitude         Float
+  longitude        Float
+  popularDistricts District[]
+  properties       Property[]
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+}
+
+model District {
+  id         String     @id @default(uuid())
+  slug       String
+  name       String
+  nameAr     String
+  cityId     String
+  city       City       @relation(fields: [cityId], references: [id], onDelete: Cascade)
+  latitude   Float
+  longitude  Float
+  properties Property[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  @@unique([cityId, slug])
+}
+
+model Property {
+  id            Int        @id @default(autoincrement())
+  title         String
+  titleAr       String
+  description   String
+  descriptionAr String
+  price         Float
+  type          String     // Villa, Apartment, House, Land, Commercial, Office, Shop
+  purpose       String     // Sale, Rent
+  cityId        String
+  city          City       @relation(fields: [cityId], references: [id])
+  districtId    String?
+  district      District?  @relation(fields: [districtId], references: [id])
+  cityName      String
+  cityNameAr    String
+  districtName  String
+  districtNameAr String
+  bedrooms      Int        @default(0)
+  bathrooms     Int        @default(0)
+  area          Float
+  image         String
+  images        String     @default("[]") // JSON string array of extra image URLs
+  features      String     @default("[]") // JSON string array
+  featuresAr    String     @default("[]") // JSON string array
+  latitude      Float
+  longitude     Float
+  featured      Boolean    @default(false)
+  rating        Float      @default(4.5)
+  inquiries     Inquiry[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+model Inquiry {
+  id         String    @id @default(uuid())
+  name       String
+  email      String
+  phone      String?
+  message    String
+  propertyId Int?
+  property   Property? @relation(fields: [propertyId], references: [id], onDelete: SetNull)
+  status     String    @default("UNREAD") // UNREAD, READ, REPLIED
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
