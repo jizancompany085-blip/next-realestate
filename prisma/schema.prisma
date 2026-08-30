@@ -70,9 +70,9 @@ model Property {
   bathrooms     Int        @default(0)
   area          Float
   image         String     @db.Text
-  images        String     @db.Text // JSON string array of extra image URLs
-  features      String     @db.Text // JSON string array
-  featuresAr    String     @db.Text // JSON string array
+  images        String     @db.Text @default("[]") // JSON string array of extra image URLs
+  features      String     @db.Text @default("[]") // JSON string array
+  featuresAr    String     @db.Text @default("[]") // JSON string array
   latitude      Float
   longitude     Float
   featured      Boolean    @default(false)
