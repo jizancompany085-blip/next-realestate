@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db/prisma';
+import { ensureDbSeeded } from '@/lib/db/seed-helper';
 
 export async function GET(request: Request) {
   try {
+    await ensureDbSeeded();
     const { searchParams } = new URL(request.url);
     const search = searchParams.get('search') || '';
     const city = searchParams.get('city') || '';
