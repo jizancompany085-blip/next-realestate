@@ -1,5 +1,5 @@
 datasource db {
-  provider = "sqlite"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -24,7 +24,7 @@ model City {
   nameAr           String
   region           String
   regionAr         String
-  image            String
+  image            String     @db.Text
   latitude         Float
   longitude        Float
   popularDistricts District[]
@@ -53,8 +53,8 @@ model Property {
   id            Int        @id @default(autoincrement())
   title         String
   titleAr       String
-  description   String
-  descriptionAr String
+  description   String     @db.Text
+  descriptionAr String     @db.Text
   price         Float
   type          String     // Villa, Apartment, House, Land, Commercial, Office, Shop
   purpose       String     // Sale, Rent
@@ -69,10 +69,10 @@ model Property {
   bedrooms      Int        @default(0)
   bathrooms     Int        @default(0)
   area          Float
-  image         String
-  images        String     @default("[]") // JSON string array of extra image URLs
-  features      String     @default("[]") // JSON string array
-  featuresAr    String     @default("[]") // JSON string array
+  image         String     @db.Text
+  images        String     @db.Text // JSON string array of extra image URLs
+  features      String     @db.Text // JSON string array
+  featuresAr    String     @db.Text // JSON string array
   latitude      Float
   longitude     Float
   featured      Boolean    @default(false)
@@ -87,7 +87,7 @@ model Inquiry {
   name       String
   email      String
   phone      String?
-  message    String
+  message    String    @db.Text
   propertyId Int?
   property   Property? @relation(fields: [propertyId], references: [id], onDelete: SetNull)
   status     String    @default("UNREAD") // UNREAD, READ, REPLIED
